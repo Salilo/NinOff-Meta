@@ -115,21 +115,18 @@ with cols[1]:
 # ===== SIDEBAR ÚNICA =====
 with st.sidebar:
     # Crie colunas dentro da sidebar
-    col1, col2 = st.columns([3, 2]) 
+    col1, col2 = st.columns(2)
     
     # Coluna esquerda (configurações)
     with col1:
         st.header("⚙️ Configuração", divider="red")
-
-        with col1:
-    st.header("⚙️ Configuração", divider="red")
-    st.write("")  # Espaço vazio
-
+        st.write("")  # Espaço vazio
+        
         # Faction Bonuses
         st.subheader("🏛️ Faction Bonuses")
         faction = st.radio("Selecione sua facção:", 
-                          ["Nenhuma", "Akatsuki (+25)", "Kage (+20)", "Leaf 12 Guardian (+10)"],
-                          index=0)
+                         ["Nenhuma", "Akatsuki (+25)", "Kage (+20)", "Leaf 12 Guardian (+10)"],
+                         index=0)
         
         faction_bonus = 0
         if "Akatsuki" in faction:
