@@ -119,15 +119,15 @@ st.title("🔥 Nin0ff-Meta Calculator")
 st.subheader("📊 Atributos Base")
 base_cols = st.columns(5)
 with base_cols[0]:
-    attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
+attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
 with base_cols[1]:
-    attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
+attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
 with base_cols[2]:
-    attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
+attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
 with base_cols[3]:
-    attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
+attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
 with base_cols[4]:
-    attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
+attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
     
 # ===== SIDEBAR ÚNICA =====
 with st.sidebar:
