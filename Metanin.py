@@ -14,6 +14,12 @@ st.set_page_config(
 
 # ===== CONSTANTES =====
 MAX_POINTS = 285
+SIGN_EMOJIS = {
+    "Capricorn": "♑", "Aquarius": "♒", "Pisces": "♓", "Aries": "♈",
+    "Taurus": "♉", "Gemini": "♊", "Cancer": "♋", "Leo": "♌",
+    "Virgo": "♍", "Libra": "♎", "Scorpio": "♏", "Saggitarius": "♐"
+}
+
 EMOJI_MAP = {
     "Fire": "🔥", "Wind": "🍃", "Lightning": "⚡", "Earth": "🪨",
     "Medical": "🧪", "Weapon": "🗡️", "Taijutsu": "🥋"
@@ -23,9 +29,13 @@ COLORS = {
     "Earth": "#FFAA55", "Medical": "#55FFAA", "Weapon": "#AAAAAA", "Taijutsu": "#AA55FF"
 }
 ELEMENTS = list(EMOJI_MAP.keys())
+
 IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
 
 # ===== FUNÇÕES =====
+def label_charm(name):
+    return f"{SIGN_EMOJIS.get(name, '')} {name}" if name != "Nenhum" else "Nenhum"
+
 def label_with_emoji(name):
     return f"{EMOJI_MAP.get(name, '')} {name}"
 
@@ -73,11 +83,10 @@ with st.sidebar:
         available_secondary = [e for e in ELEMENTS if e != primary]
         secondary = st.selectbox("Secundário", available_secondary, format_func=label_with_emoji)
 
-    charms = ["Nenhum"] + [
-        "Capricorn", "Aquarius", "Leo", "Saggitarius", "Virgo",
-        "Cancer", "Pisces", "Libra", "Scorpio", "Gemini", "Taurus"
-    ]
-    charm = st.selectbox("Charm", charms, index=0)
+    charms = ["Nenhum"] + list(SIGN_EMOJIS.keys())
+    charm = st.selectbox("Charm", charms, index=0, format_func=label_charm)
+
+
     guild_level = st.slider("Guild Level", 0, 10, 0)
 
     st.header("🧬 Atributos Base", divider="gray")
