@@ -192,11 +192,11 @@ with col2:
     st.write("")  # Espaçamento
 
         # Exibir os atributos
-        st.metric("STR (Força)", attributes["STR"])
-        st.metric("FRT (Resistência)", attributes["FRT"])
-        st.metric("INT (Inteligência)", attributes["INT"])
-        st.metric("AGI (Agilidade)", attributes["AGI"])
-        st.metric("CHK (Controle)", attributes["CHK"])
+    st.metric("STR (Força)", attributes["STR"])
+    st.metric("FRT (Resistência)", attributes["FRT"])
+    st.metric("INT (Inteligência)", attributes["INT"])
+    st.metric("AGI (Agilidade)", attributes["AGI"])
+    st.metric("CHK (Controle)", attributes["CHK"])
 
         # Seletor de armas
         st.header("⚔️ Seleção de Arma", divider="gray")
