@@ -31,7 +31,7 @@ COLORS = {
 }
 ELEMENTS = list(EMOJI_MAP.keys())
 
-IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
+IMAGE_URL = "https://pbs.twimg.com/media/EU0zpJrUwAA-d9i.jpg:large"  # Substitua pelo link desejado
 
 # ===== FUNÇÕES =====
 def label_charm(name):
@@ -163,11 +163,11 @@ with right_sidebar:
     
     # Calcular atributos finais
     attributes = {
-    "STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
-    "FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
-    "INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
-    "AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
-    "CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
+"STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
+"FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
+"INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
+"AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
+"CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
     }
 
     # Exibir os atributos
