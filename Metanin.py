@@ -429,7 +429,8 @@ try:
         st.markdown("""
         <div style="margin-top: 20px;">
             <h3 style="margin-bottom: 5px;">Nin0ff-Meta Calculator</h3>
-            <p style="color: #666; font-size: 1.3em;">By <strong>Rin</strong></p>
+            <p style="color: #666; font-size: 0.9em;">By <strong>Rin</strong></p>
+            <p style="color: #666; font-size: 1.3em;">any problems contact me on discord</p>
         </div>
         """, unsafe_allow_html=True)
 
