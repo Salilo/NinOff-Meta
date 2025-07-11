@@ -208,14 +208,14 @@ with col2:
         weapon_data = weapons_db[selected_weapon]
         meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
             
-            if meets_requirements:
-                st.success("✅ Requisitos atendidos")
-            else:
-                st.error("❌ Requisitos não atendidos")
+        if meets_requirements:
+            st.success("✅ Requisitos atendidos")
+        else:
+            st.error("❌ Requisitos não atendidos")
             
-            st.write(f"**Dano Base:** {weapon_data['base_damage']}")
-            st.write(f"**Escalonamento:** {weapon_data['scaling']}")
-            st.write(f"**Descrição:** {weapon_data['description']}")
+        st.write(f"**Dano Base:** {weapon_data['base_damage']}")
+        st.write(f"**Escalonamento:** {weapon_data['scaling']}")
+        st.write(f"**Descrição:** {weapon_data['description']}")
 
         # Botão para mostrar técnicas comuns
         show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
