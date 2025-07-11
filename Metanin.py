@@ -171,15 +171,6 @@ with right_sidebar:
     st.metric("INT (Inteligência)", attributes["INT"])
     st.metric("AGI (Agilidade)", attributes["AGI"])
     st.metric("CHK (Controle)", attributes["CHK"])
-    
-    # Calcular atributos finais
-    if 'attributes_base' in locals():
-        attributes = {
-            attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
-            for attr, val in attributes_base.items()
-        }
-    else:
-        attributes = {a: 5 for a in ["STR", "FRT", "INT", "AGI", "CHK"]}
 
     # Subheader para Atributos Finais (mais compacto)
     st.subheader("Atributos Finais")
