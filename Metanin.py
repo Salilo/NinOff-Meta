@@ -19,7 +19,7 @@ COLORS = {
     "Earth": "#FFAA55", "Medical": "#55FFAA", "Weapon": "#AAAAAA", "Taijutsu": "#AA55FF"
 }
 
-IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
+IMAGE_URL = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg"  # Substitua pelo link desejado
 
 # ===== FUNÇÕES AUXILIARES =====
 def calculate_level(total_points):
