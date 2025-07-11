@@ -99,6 +99,23 @@ weapons_db = {
     }
 }
 
+# ===== DADOS INICIAIS =====
+attributes_base = {
+    "STR": 5,
+    "FRT": 5,
+    "INT": 5,
+    "AGI": 5,
+    "CHK": 5
+}
+
+charm = "Nenhum"  # Ou use st.selectbox() mais tarde
+guild_level = 0
+faction_bonus = 0
+
+attributes = {
+    attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
+    for attr, val in attributes_base.items()
+}
 
 # ===== SIDEBAR =====
 with st.sidebar:
