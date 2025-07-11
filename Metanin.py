@@ -87,7 +87,7 @@ with st.sidebar:
     charm = st.selectbox("Charm", charms, index=0, format_func=label_charm)
 
 
-    guild_level = st.slider("Guild Level", 0, 10, 0)
+    guild_level = st.slider("Guild Level Status", 0, 10, 0)
 
     st.header("🧬 Atributos Base", divider="gray")
     cols = st.columns(2)
