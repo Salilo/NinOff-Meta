@@ -148,48 +148,6 @@ weapons_db = {
         "description": "Katana de madeira para treinamento"
     }
 }
-# Seletor de armas
-st.header("⚔️ Seleção de Arma", divider="gray")
-weapon_list = list(weapons_db.keys())
-selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
-    
-# Verifica requisitos da arma
-weapon_data = weapons_db[selected_weapon]
-meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
-    
-if meets_requirements:
-    st.success("✅ Requisitos atendidos")
-else:
-    st.error("❌ Requisitos não atendidos")
-    
-st.write(f"**Dano Base:** {weapon_data['base_damage']}")
-st.write(f"**Escalonamento:** {weapon_data['scaling']}")
-st.write(f"**Descrição:** {weapon_data['description']}")
-
-    # Botão para mostrar técnicas comuns
-show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
-
-    # Cálculos de pontos
-total_spent = sum(attributes_base.values()) - (5 * 5)
-level = calculate_level(total_spent)
-total_available = calculate_available_points(level)
-remaining_points = max(0, total_available - total_spent)
-
-st.header("📊 Status", divider="gray")
-st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
-st.metric("Pontos Disponíveis", remaining_points)
-st.metric("Nível", level)
-
-if total_spent > MAX_POINTS:
-    st.error(f"Limite de {MAX_POINTS} pontos excedido!")
-elif total_spent > total_available:
-    st.warning("Pontos gastos excedem os disponíveis para este nível")
-
-# Mostrar atributos finais
-st.header("🎯 Atributos Finais", divider="gray")
-for attr, value in attributes.items():
-    st.write(f"{attr}: {value}")
-
 
 # ===== TÉCNICAS =====
 techniques_db = {
