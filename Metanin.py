@@ -128,6 +128,7 @@ with base_cols[3]:
     attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
 with base_cols[4]:
     attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
+    
 # ===== SIDEBAR ÚNICA =====
 with st.sidebar:
     # Crie colunas dentro da sidebar
