@@ -415,14 +415,16 @@ if show_common:
 
 # ===== CRÉDITOS E IMAGEM =====
 
-# URL da imagem
-img_url = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg  # Substitua pela URL real
+img_url = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg
 
 try:
-    # Cria layout de créditos elegante
+    response = requests.get(img_url)
+    img = Image.open(BytesIO(response.content))
+    
+    # Restante do seu código...
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image(img_url, width=100)  # Carrega a imagem diretamente da URL
+        st.image(img, width=100)
     with col2:
         st.markdown("""
         <div style="margin-top: 20px;">
@@ -431,6 +433,7 @@ try:
             <p style="color: #666; font-size: 0.8em;">Versão 2.0 | 2023</p>
         </div>
         """, unsafe_allow_html=True)
+
 except Exception as e:
     st.warning(f"Imagem de créditos não carregada. Erro: {str(e)}")
 
