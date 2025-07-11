@@ -424,10 +424,10 @@ try:
     # Restante do seu código...
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image(img, width=500)
+        st.image(img, width=360)
     with col2:
         st.markdown("""
-        <div style="margin-top: 20px;">
+        <div style="margin-top: 10px;">
             <h3 style="margin-bottom: 5px;">Nin0ff-Meta Calculator</h3>
             <p style="color: #666; font-size: 0.9em;">By <strong>Rin</strong></p>
             <p style="color: #666; font-size: 1.3em;">any problems contact me on discord</p>
