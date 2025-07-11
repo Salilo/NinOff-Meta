@@ -77,6 +77,29 @@ def style_weapon(row):
     color = "#55FF55" if meets_req else "#FF5555"
     return [f"background-color: {color}; color: #000000" for _ in row]
 
+# ===== BANCO DE DADOS DE ARMAS =====
+weapons_db = {
+    "Kunai Dagger": {
+        "base_damage": 9,
+        "scaling": "STR",
+        "requirements": {"INT": 10},
+        "description": "Kunai padrão para combate à distância"
+    },
+    "Poison-Laced Kunai": {
+        "base_damage": 9,
+        "scaling": "STR",
+        "requirements": {"INT": 10},
+        "description": "Envenena o alvo ao acertar"
+    },
+    "Wooden Katana": {
+        "base_damage": 2,
+        "scaling": "STR",
+        "requirements": {"STR": 12},
+        "description": "Katana de madeira para treinamento"
+    }
+}
+
+
 # ===== SIDEBAR =====
 with st.sidebar:
     st.header("⚔️ Seleção de Arma", divider="gray")
@@ -127,27 +150,6 @@ with st.sidebar:
         attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
         for attr, val in attributes_base.items()
     }
-# ===== BANCO DE DADOS DE ARMAS =====
-weapons_db = {
-    "Kunai Dagger": {
-        "base_damage": 9,
-        "scaling": "STR",
-        "requirements": {"INT": 10},
-        "description": "Kunai padrão para combate à distância"
-    },
-    "Poison-Laced Kunai": {
-        "base_damage": 9,
-        "scaling": "STR",
-        "requirements": {"INT": 10},
-        "description": "Envenena o alvo ao acertar"
-    },
-    "Wooden Katana": {
-        "base_damage": 2,
-        "scaling": "STR",
-        "requirements": {"STR": 12},
-        "description": "Katana de madeira para treinamento"
-    }
-}
 
 # ===== TÉCNICAS =====
 techniques_db = {
