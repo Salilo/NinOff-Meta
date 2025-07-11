@@ -3,8 +3,9 @@ import pandas as pd
 from PIL import Image
 import requests
 from io import BytesIO
+import base64
 
-# ===== CONFIGURAÇÃO =====
+# ===== CONFIGURAÇÃO INICIAL =====
 st.set_page_config(
     page_title="Nin0ff-Meta",
     page_icon="🔥",
@@ -12,16 +13,22 @@ st.set_page_config(
 )
 
 # ===== CONSTANTES =====
-ELEMENTS = ["Fire", "Wind", "Lightning", "Earth", "Medical", "Weapon", "Taijutsu"]
 MAX_POINTS = 285
+EMOJI_MAP = {
+    "Fire": "🔥", "Wind": "🍃", "Lightning": "⚡", "Earth": "🪨",
+    "Medical": "🧪", "Weapon": "🗡️", "Taijutsu": "🥋"
+}
 COLORS = {
     "Fire": "#FF5555", "Wind": "#55FF55", "Lightning": "#FFFF55",
     "Earth": "#FFAA55", "Medical": "#55FFAA", "Weapon": "#AAAAAA", "Taijutsu": "#AA55FF"
 }
+ELEMENTS = list(EMOJI_MAP.keys())
+IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
 
-IMAGE_URL = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg"  # Substitua pelo link desejado
+# ===== FUNÇÕES =====
+def label_with_emoji(name):
+    return f"{EMOJI_MAP.get(name, '')} {name}"
 
-# ===== FUNÇÕES AUXILIARES =====
 def calculate_level(total_points):
     level, points_needed = 1, 0
     while level <= 60 and points_needed <= MAX_POINTS:
@@ -48,10 +55,11 @@ def apply_bonuses(base, charm, guild_level, attr):
     return int(value_with_guild * (1 + bonus)) if isinstance(bonus, float) else int(value_with_guild + bonus)
 
 def style_element(row):
-    color = COLORS[row["Elemento"]]
+    nome_elemento = row["Elemento"].split(" ", 1)[-1]  # Remove emoji
+    color = COLORS.get(nome_elemento, "#FFFFFF")
     return [f"background-color: {color}; color: #000000" for _ in row]
 
-# ===== CABEÇALHO =====
+# ===== INTERFACE PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
 
 # ===== SIDEBAR =====
@@ -60,10 +68,10 @@ with st.sidebar:
 
     cols = st.columns(2)
     with cols[0]:
-        primary = st.selectbox("Primário", ELEMENTS, index=0)
+        primary = st.selectbox("Primário", ELEMENTS, format_func=label_with_emoji)
     with cols[1]:
-        available_secondary = [el for el in ELEMENTS if el != primary]
-        secondary = st.selectbox("Secundário", available_secondary, index=0)
+        available_secondary = [e for e in ELEMENTS if e != primary]
+        secondary = st.selectbox("Secundário", available_secondary, format_func=label_with_emoji)
 
     charms = ["Nenhum"] + [
         "Capricorn", "Aquarius", "Leo", "Saggitarius", "Virgo",
@@ -72,7 +80,6 @@ with st.sidebar:
     charm = st.selectbox("Charm", charms, index=0)
     guild_level = st.slider("Guild Level", 0, 10, 0)
 
-    # Atributos
     st.header("🧬 Atributos Base", divider="gray")
     cols = st.columns(2)
     attributes_base = {}
@@ -84,13 +91,11 @@ with st.sidebar:
         attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1)
         attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1)
 
-    # Atributos com bônus
     attributes = {
         attr: apply_bonuses(val, charm, guild_level, attr)
         for attr, val in attributes_base.items()
     }
 
-    # Status
     total_spent = sum(attributes_base.values()) - (5 * 5)
     level = calculate_level(total_spent)
     total_available = calculate_available_points(level)
@@ -138,7 +143,7 @@ def create_tech_df(element):
 
         tech_list.append({
             "Técnica": name,
-            "Elemento": element,
+            "Elemento": f"{EMOJI_MAP.get(element, '')} {element}",
             "Dano Base": data["base"],
             "Scaling": data["scaling"],
             "Dano Total": f"{damage:.1f}",
@@ -152,9 +157,9 @@ def create_tech_df(element):
 try:
     df_primary = create_tech_df(primary)
     df_secondary = create_tech_df(secondary)
-    df_combined = pd.concat([df_primary, df_secondary])
+    df_combined = pd.concat([df_primary, df_secondary]).reset_index(drop=True)
 
-    st.header(f"📜 Técnicas de {primary} + {secondary}")
+    st.header(f"📜 Técnicas de {label_with_emoji(primary)} + {label_with_emoji(secondary)}")
     if not df_combined.empty:
         styled_df = df_combined.style.apply(style_element, axis=1).format(precision=1)
         st.dataframe(
@@ -172,11 +177,10 @@ try:
 except Exception as e:
     st.error(f"Erro ao gerar tabela: {str(e)}")
 
-# ===== IMAGEM INFERIOR DIREITA COM CÍRCULO =====
+# ===== IMAGEM CIRCULAR FIXADA =====
 try:
     response = requests.get(IMAGE_URL)
-    img = Image.open(BytesIO(response.content))
-    img.save("user_img.png")  # Temporário
+    img_data = base64.b64encode(response.content).decode()
 
     st.markdown(f"""
         <style>
@@ -188,15 +192,14 @@ try:
                 height: 80px;
                 border-radius: 50%;
                 overflow: hidden;
-                z-index: 9999;
                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                z-index: 9999;
             }}
         </style>
         <div class="circle-img">
-            <img src="data:image/png;base64,{BytesIO(response.content).getvalue().hex()}" width="100%">
+            <img src="data:image/png;base64,{img_data}" width="100%">
         </div>
     """, unsafe_allow_html=True)
-
 except:
     st.warning("Imagem de avatar não carregada.")
 
