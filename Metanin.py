@@ -176,15 +176,15 @@ st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
 st.metric("Pontos Disponíveis", remaining_points)
 st.metric("Nível", level)
 
-    if total_spent > MAX_POINTS:
-        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
-    elif total_spent > total_available:
-        st.warning("Pontos gastos excedem os disponíveis para este nível")
+if total_spent > MAX_POINTS:
+    st.error(f"Limite de {MAX_POINTS} pontos excedido!")
+elif total_spent > total_available:
+    st.warning("Pontos gastos excedem os disponíveis para este nível")
 
-    # Mostrar atributos finais
-    st.header("🎯 Atributos Finais", divider="gray")
-    for attr, value in attributes.items():
-        st.write(f"{attr}: {value}")
+# Mostrar atributos finais
+st.header("🎯 Atributos Finais", divider="gray")
+for attr, value in attributes.items():
+    st.write(f"{attr}: {value}")
 
 
 # ===== TÉCNICAS =====
