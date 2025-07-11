@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 # Configuração da página
 st.set_page_config(
-    page_title="Nin0ff-Meta",
+    page_title="Metanin Renewal Calculator",
     page_icon="🔥",
     layout="wide"
 )
@@ -11,6 +12,15 @@ st.set_page_config(
 # ===== CONSTANTES =====
 ELEMENTS = ["Fire", "Wind", "Lightning", "Earth", "Medical", "Weapon", "Taijutsu"]
 BASE_ATTRIBUTE = 5  # Todos atributos começam em 5
+COLORS = {
+    "Fire": "#FF5555",
+    "Wind": "#55FF55",
+    "Lightning": "#FFFF55",
+    "Earth": "#FFAA55",
+    "Medical": "#55FFAA",
+    "Weapon": "#AAAAAA",
+    "Taijutsu": "#AA55FF"
+}
 
 # ===== FUNÇÕES =====
 def calculate_level(total_points):
@@ -54,70 +64,70 @@ def apply_bonuses(base_value, charm, guild_level, attr_name):
     else:
         return int(value_with_guild + bonus)
 
+def style_element(row):
+    """Aplica cores aos elementos na tabela"""
+    color = COLORS[row["Elemento"]]
+    return [f"background-color: {color}; color: #000000" for _ in row]
+
 # ===== INTERFACE =====
 st.title("🔥 Metanin Renewal Calculator")
 
-# Sidebar - Configurações
+# Sidebar - Configurações (otimizada)
 with st.sidebar:
-    st.header("Configuração do Personagem")
+    st.header("⚙️ Configuração", divider="red")
     
-    # Elementos
-    primary = st.selectbox("Elemento Primário", ELEMENTS, index=0)
-    secondary = st.selectbox("Elemento Secundário", ELEMENTS, index=1)
+    # Elementos em colunas compactas
+    col1, col2 = st.columns(2)
+    with col1:
+        primary = st.selectbox("Primário", ELEMENTS, index=0, key="primary")
+    with col2:
+        secondary = st.selectbox("Secundário", ELEMENTS, index=1, key="secondary")
     
-    # Charm
+    # Charm compacto
     charms = [
         "Nenhum", "Capricorn", "Aquarius", "Leo", "Saggitarius", 
         "Virgo", "Cancer", "Pisces", "Libra", "Scorpio", "Gemini", "Taurus"
     ]
-    charm = st.selectbox("Charm do Signo", charms)
+    charm = st.selectbox("Charm", charms, index=0)
     
-    # Guild Level
-    guild_level = st.slider("Status Level Guild", 0, 10, 0)
+    # Guild Level compacto
+    guild_level = st.slider("Guild Level", 0, 10, 0, help="+1% em todos atributos por nível")
     
-    # Atributos (base começa em 5)
-    st.header("Atributos Base")
-    str_base = st.number_input("STR", min_value=5, value=5)
-    frt_base = st.number_input("FRT", min_value=5, value=5)
-    int_base = st.number_input("INT", min_value=5, value=5)
-    agi_base = st.number_input("AGI", min_value=5, value=5)
-    chk_base = st.number_input("CHK", min_value=5, value=5)
+    # Atributos em colunas compactas
+    st.header("🧬 Atributos Base", divider="gray")
+    cols = st.columns(2)
+    attributes = {}
+    with cols[0]:
+        attributes["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str")
+        attributes["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt")
+        attributes["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int")
+    with cols[1]:
+        attributes["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi")
+        attributes["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk")
     
-    # Calcula atributos finais com bônus
-    strength = apply_bonuses(str_base, charm, guild_level, "STR")
-    fortitude = apply_bonuses(frt_base, charm, guild_level, "FRT")
-    intellect = apply_bonuses(int_base, charm, guild_level, "INT")
-    agility = apply_bonuses(agi_base, charm, guild_level, "AGI")
-    chakra = apply_bonuses(chk_base, charm, guild_level, "CHK")
+    # Calcula pontos
+    total_points_spent = sum(attributes.values()) - (5 * 5)
+    total_points_available = (calculate_level(total_points_spent) - 1) * 5
+    if calculate_level(total_points_spent) > 50:
+        total_points_available += (calculate_level(total_points_spent) - 50) * 4
     
-    # Mostra atributos finais
-    st.header("Atributos com Bônus")
-    st.write(f"STR: {str_base} → **{strength}**")
-    st.write(f"FRT: {frt_base} → **{fortitude}**")
-    st.write(f"INT: {int_base} → **{intellect}**")
-    st.write(f"AGI: {agi_base} → **{agility}**")
-    st.write(f"CHK: {chk_base} → **{chakra}**")
-    
-    # Calcula nível
-    total_points = (str_base + frt_base + int_base + agi_base + chk_base) - (5 * 5)  # Remove base 5
-    level = calculate_level(total_points)
-    st.header("Nível do Personagem")
-    st.metric("Level", level)
+    # Mostra resumo
+    st.header("📊 Status", divider="gray")
+    st.metric("Pontos Gastos", total_points_spent)
+    st.metric("Pontos Disponíveis", max(0, total_points_available - total_points_spent))
+    st.metric("Nível", calculate_level(total_points_spent))
 
 # ===== BANCO DE TÉCNICAS =====
 techniques_db = {
     "Fire": {
         "Phoenix Fireball": {"base": 27, "scaling": "INT", "cost": 10, "cooldown": 16},
         "Big Flame Bullet": {"base": 35, "scaling": "INT", "cost": 30, "cooldown": 18},
-        "Fire Wall": {"base": 22, "scaling": "INT", "cost": 15, "cooldown": 12},
-        "Combusting Vortex": {"base": 40, "scaling": "INT", "cost": 45, "cooldown": 25},
-        "Flame Dragon": {"base": 45, "scaling": "INT", "cost": 50, "cooldown": 30}
+        "Fire Wall": {"base": 22, "scaling": "INT", "cost": 15, "cooldown": 12}
     },
     "Wind": {
         "Wind Shuriken (INT)": {"base": 25, "scaling": "INT", "cost": 12, "cooldown": 10},
         "Wind Scythe (INT)": {"base": 32, "scaling": "INT", "cost": 20, "cooldown": 15},
-        "Slashing Tornado (STR)": {"base": 30, "scaling": "STR", "cost": 25, "cooldown": 18},
-        "Wind Cyclone (STR)": {"base": 40, "scaling": "STR", "cost": 35, "cooldown": 25}
+        "Slashing Tornado (STR)": {"base": 30, "scaling": "STR", "cost": 25, "cooldown": 18}
     },
     "Weapon": {
         "Kunai": {"base": 1, "scaling": "STR", "cost": 0, "cooldown": 0},
@@ -127,16 +137,11 @@ techniques_db = {
 }
 
 # ===== TABELA DE TÉCNICAS =====
-st.header(f"Técnicas de {primary}")
-
-# Filtra técnicas do elemento primário
-tech_data = techniques_db.get(primary, {})
-if not tech_data:
-    st.warning("Nenhuma técnica disponível para este elemento")
-else:
-    # Prepara os dados para a tabela
+def create_technique_table(element):
+    """Cria dataframe com técnicas de um elemento"""
+    tech_data = techniques_db.get(element, {})
     techniques_list = []
-    scaling_map = {"STR": strength, "INT": intellect, "CHK": chakra}
+    scaling_map = {"STR": attributes["STR"], "INT": attributes["INT"], "CHK": attributes["CHK"]}
     
     for name, data in tech_data.items():
         scaling_value = scaling_map[data["scaling"]]
@@ -145,27 +150,49 @@ else:
         
         techniques_list.append({
             "Técnica": name,
-            "Elemento": primary,
+            "Elemento": element,
             "Dano Base": data["base"],
             "Scaling": data["scaling"],
-            "Dano Total": f"{damage:.1f}",
-            "DPS": f"{dps:.1f}",
-            "Custo Chakra": data["cost"],
+            "Dano Total": damage,
+            "DPS": dps,
+            "Chakra": data["cost"],
             "Cooldown": data["cooldown"]
         })
+    
+    return pd.DataFrame(techniques_list)
 
-    # Exibe a tabela
-    df = pd.DataFrame(techniques_list)
+# Tabela combinada (primário + secundário)
+df_primary = create_technique_table(primary)
+df_secondary = create_technique_table(secondary)
+df_combined = pd.concat([df_primary, df_secondary])
+
+# Estilo da tabela
+def color_scaling(val):
+    color = {
+        "STR": "#FF9999",
+        "INT": "#99FF99",
+        "CHK": "#9999FF"
+    }.get(val, "#FFFFFF")
+    return f"background-color: {color}"
+
+st.header(f"📜 Técnicas de {primary} + {secondary}")
+if not df_combined.empty:
     st.dataframe(
-        df,
-        column_config={
-            "Dano Total": st.column_config.NumberColumn(format="%.1f"),
-            "DPS": st.column_config.NumberColumn(format="%.1f")
-        },
+        df_combined.style
+            .apply(style_element, axis=1)
+            .applymap(color_scaling, subset=["Scaling"])
+            .format({
+                "Dano Total": "{:.1f}",
+                "DPS": "{:.1f}"
+            }),
+        column_order=["Técnica", "Elemento", "Dano Base", "Scaling", "Dano Total", "DPS", "Chakra", "Cooldown"],
         hide_index=True,
-        use_container_width=True
+        use_container_width=True,
+        height=min(600, 45 * len(df_combined) + 45)
     )
+else:
+    st.warning("Nenhuma técnica disponível para estes elementos")
 
 # ===== RODAPÉ =====
 st.divider()
-st.caption("✨ Dica: Clique no cabeçalho da tabela para ordenar os resultados")
+st.caption("🎮 Dica: Ordene a tabela clicando nos cabeçalhos | Atualize a página para resetar")
