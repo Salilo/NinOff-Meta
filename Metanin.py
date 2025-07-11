@@ -98,10 +98,10 @@ weapons_db = {
     }
 }
 
-# ===== INTERFACE PRINCIPAL =====
+# ===== LAYOUT PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
 
-# Primeiro defina os atributos base
+# Atributos base (mantenha como está)
 cols = st.columns(2)
 attributes_base = {}
 with cols[0]:
@@ -111,16 +111,20 @@ with cols[0]:
 with cols[1]:
     attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
     attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
-
+    
 # ===== SIDEBAR ÚNICA =====
 with st.sidebar:
     # Crie colunas dentro da sidebar
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([3, 2]) 
     
     # Coluna esquerda (configurações)
     with col1:
         st.header("⚙️ Configuração", divider="red")
-        
+
+        with col1:
+    st.header("⚙️ Configuração", divider="red")
+    st.write("")  # Espaço vazio
+
         # Faction Bonuses
         st.subheader("🏛️ Faction Bonuses")
         faction = st.radio("Selecione sua facção:", 
