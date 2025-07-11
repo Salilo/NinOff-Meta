@@ -415,7 +415,7 @@ if show_common:
 
 # ===== CRÉDITOS E IMAGEM =====
 
-img_url = "https://i.imgur.com/eIOxkDA.jpg"
+img_url = "https://media.discordapp.net/attachments/225436696831983616/1393220653553025064/eIOxkDA.png?ex=68726158&is=68710fd8&hm=2f8b9ff16895844008dfb2a6ea94457fcefc228f482a81cebf617ee7f4c7bf72&="
 
 try:
     response = requests.get(img_url)
