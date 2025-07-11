@@ -29,6 +29,7 @@ COLORS = {
     "Earth": "#FFAA55", "Water": "#55AAFF", "Medical": "#55FFAA", 
     "Weapon": "#AAAAAA", "Taijutsu": "#AA55FF", "Common": "#DDDDDD"
 }
+
 ELEMENTS = list(EMOJI_MAP.keys())
 
 IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
@@ -317,29 +318,6 @@ if selected_weapon:
     weapon_damage = weapon_data["base_damage"] + (scaling_value * 0.6)
     st.sidebar.metric("Dano da Arma", f"{weapon_damage:.1f}")
 
-
-def create_tech_df(element):
-    tech_data = techniques_db.get(element, {})
-    scaling_map = {"STR": attributes["STR"], "INT": attributes["INT"], "CHK": attributes["CHK"]}
-
-    tech_list = []
-    for name, data in tech_data.items():
-        scaling_value = scaling_map[data["scaling"]]
-        damage = data["base"] + (scaling_value * 0.6)
-        dps = damage / data["cooldown"] if data["cooldown"] > 0 else 0
-
-        tech_list.append({
-            "Técnica": name,
-            "Elemento": f"{EMOJI_MAP.get(element, '')} {element}",
-            "Dano Base": data["base"],
-            "Scaling": data["scaling"],
-            "Dano Total": f"{damage:.1f}",
-            "DPS": f"{dps:.1f}",
-            "Chakra": data["cost"],
-            "Cooldown": data["cooldown"]
-        })
-
-    return pd.DataFrame(tech_list)
 
 try:
     df_primary = create_tech_df(primary)
