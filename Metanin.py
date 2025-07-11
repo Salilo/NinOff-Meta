@@ -415,7 +415,7 @@ if show_common:
 
 # ===== CRÉDITOS E IMAGEM =====
 
-img_url = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg"
+img_url = "https://i.imgur.com/eIOxkDA.png"
 
 try:
     response = requests.get(img_url)
@@ -429,7 +429,7 @@ try:
         st.markdown("""
         <div style="margin-top: 20px;">
             <h3 style="margin-bottom: 5px;">Nin0ff-Meta Calculator</h3>
-            <p style="color: #666; font-size: 0.9em;">Desenvolvido por <strong>Rin</strong></p>
+            <p style="color: #666; font-size: 0.9em;">By <strong>Rin</strong></p>
             <p style="color: #666; font-size: 0.8em;">Versão 2.0 | 2023</p>
         </div>
         """, unsafe_allow_html=True)
