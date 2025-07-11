@@ -79,45 +79,48 @@ def style_weapon(row):
 
 # ===== SIDEBAR =====
 with st.sidebar:
-    st.header("⚙️ Configuração", divider="red")
+    st.header("⚔️ Seleção de Arma", divider="gray")
+    weapon_list = list(weapons_db.keys())
+    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
 
-    # Faction Bonuses
-    st.subheader("🏛️ Faction Bonuses")
-    faction = st.radio("Selecione sua facção:", 
-                      ["Nenhuma", "Akatsuki (+25)", "Kage (+20)", "Leaf 12 Guardian (+10)"],
-                      index=0)
-    
-    faction_bonus = 0
-    if "Akatsuki" in faction:
-        faction_bonus = 25
-    elif "Kage" in faction:
-        faction_bonus = 20
-    elif "Leaf" in faction:
-        faction_bonus = 10
+    weapon_data = weapons_db[selected_weapon]
+    meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
 
-    cols = st.columns(2)
-    with cols[0]:
-        primary = st.selectbox("Primário", ELEMENTS, format_func=label_with_emoji)
-    with cols[1]:
-        available_secondary = [e for e in ELEMENTS if e != primary]
-        secondary = st.selectbox("Secundário", available_secondary, format_func=label_with_emoji)
+    if meets_requirements:
+        st.success("✅ Requisitos atendidos")
+    else:
+        st.error("❌ Requisitos não atendidos")
 
-    charms = ["Nenhum"] + list(SIGN_EMOJIS.keys())
-    charm = st.selectbox("Charm", charms, index=0, format_func=label_charm)
+    st.write(f"**Dano Base:** {weapon_data['base_damage']}")
+    st.write(f"**Escalonamento:** {weapon_data['scaling']}")
+    st.write(f"**Descrição:** {weapon_data['description']}")
 
-    guild_level = st.slider("Guild Level Status", 0, 10, 0)
+    # Dano da arma
+    scaling_value = attributes[weapon_data["scaling"]]
+    weapon_damage = weapon_data["base_damage"] + (scaling_value * 0.6)
+    st.metric("Dano da Arma", f"{weapon_damage:.1f}")
 
-    # Atributos
-    st.header("🧬 Atributos Base", divider="gray")
-    cols = st.columns(2)
-    attributes_base = {}
-    with cols[0]:
-        attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1)
-        attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1)
-        attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1)
-    with cols[1]:
-        attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1)
-        attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1)
+    # Cálculo de pontos
+    st.header("📊 Status", divider="gray")
+    total_spent = sum(attributes_base.values()) - (5 * 5)
+    level = calculate_level(total_spent)
+    total_available = calculate_available_points(level)
+    remaining_points = max(0, total_available - total_spent)
+
+    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
+    st.metric("Pontos Disponíveis", remaining_points)
+    st.metric("Nível", level)
+
+    if total_spent > MAX_POINTS:
+        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
+    elif total_spent > total_available:
+        st.warning("Pontos gastos excedem os disponíveis para este nível")
+
+    # Atributos Finais
+    st.header("🎯 Atributos Finais", divider="gray")
+    for attr, value in attributes.items():
+        st.write(f"{attr}: {value}")
+
 
     # Atributos com bônus
     attributes = {
