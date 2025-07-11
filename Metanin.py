@@ -275,7 +275,7 @@ try:
             },
             hide_index=True,
             use_container_width=True,
-            height=min(600, 45 * len(df_combined) + 45)
+            height=min(600, 45 * len(df_combined) + 45))
     else:
         st.warning("Nenhuma técnica disponível para estes elementos")
 except Exception as e:
