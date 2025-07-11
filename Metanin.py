@@ -149,8 +149,8 @@ with st.sidebar:
 
     # Seletor de armas
     st.header("⚔️ Seleção de Arma", divider="gray")
-    weapon_list = list(weapons_db.keys())
-    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
+weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como primeira opção
+selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
     
     # Botão para mostrar técnicas comuns
     show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
