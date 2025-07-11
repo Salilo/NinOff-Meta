@@ -101,13 +101,20 @@ weapons_db = {
 # ===== INTERFACE PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
 
+# Primeiro defina os atributos base
+cols = st.columns(2)
+attributes_base = {}
+with cols[0]:
+    attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
+    attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
+    attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
+with cols[1]:
+    attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
+    attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
 # ===== SIDEBAR ESQUERDA (CONFIGURAÇÕES) =====
 with st.sidebar:
     st.header("⚙️ Configuração", divider="red")
 
-    
-    # Botão para mostrar técnicas comuns
-show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
     # Faction Bonuses
     st.subheader("🏛️ Faction Bonuses")
@@ -140,21 +147,13 @@ show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como primeira opção
 selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
 
-# ===== ATRIBUTOS BASE =====
-cols = st.columns(2)
-attributes_base = {}
-with cols[0]:
-    attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
-    attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
-    attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
-with cols[1]:
-    attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
-    attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
-
 # ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
 right_sidebar = st.sidebar
 with right_sidebar:
     st.header("🧬 Atributos Finais", divider="blue")
+
+        # Botão para mostrar técnicas comuns
+show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
     
     # Calcular atributos finais
     attributes = {
