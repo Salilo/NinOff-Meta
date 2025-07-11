@@ -204,9 +204,9 @@ with col2:
     selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)
         
         # Verificação de requisitos
-        if selected_weapon and selected_weapon != "Nenhuma":
-            weapon_data = weapons_db[selected_weapon]
-            meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
+    if selected_weapon and selected_weapon != "Nenhuma":
+        weapon_data = weapons_db[selected_weapon]
+        meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
             
             if meets_requirements:
                 st.success("✅ Requisitos atendidos")
