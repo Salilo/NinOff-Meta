@@ -163,7 +163,7 @@ st.write(f"**Escalonamento:** {weapon_data['scaling']}")
 st.write(f"**Descrição:** {weapon_data['description']}")
 
     # Botão para mostrar técnicas comuns
-    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
+show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
     # Cálculos de pontos
     total_spent = sum(attributes_base.values()) - (5 * 5)
