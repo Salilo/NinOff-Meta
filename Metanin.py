@@ -200,8 +200,7 @@ try:
         styled_df = df_combined.style \
             .apply(style_element, axis=1) \
             .format(precision=1)
-        
-        st.dataframe()
+        st.dataframe(
             styled_df,
             column_config={
                 "Dano Total": st.column_config.NumberColumn(format="%.1f"),
