@@ -103,6 +103,48 @@ weapons_db = {
 st.title("🔥 Nin0ff-Meta Calculator")
 col_main, col_stats = st.columns([3, 1], gap="large")
 
+with col_main:
+    st.markdown("## Configurações e Cálculos")
+
+with col_stats:
+    st.markdown("## ⚖️ Status e Atributos")
+
+    # Atributos base
+    st.subheader("🧬 Base")
+    attributes_base = {}
+    for attr in ["STR", "FRT", "INT", "AGI", "CHK"]:
+        attributes_base[attr] = st.number_input(attr, min_value=5, value=5, step=1, key=f"base_{attr}")
+
+    # Cálculo de atributos finais
+    attributes = {
+        attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
+        for attr, val in attributes_base.items()
+    }
+
+    # Total de pontos usados
+    total_spent = sum(attributes_base.values()) - (5 * 5)
+    level = calculate_level(total_spent)
+    total_available = calculate_available_points(level)
+    remaining_points = max(0, total_available - total_spent)
+
+    # Status
+    st.subheader("📊 Pontos")
+    st.metric("Gastos", f"{total_spent}/{MAX_POINTS}")
+    st.metric("Restantes", remaining_points)
+    st.metric("Nível", level)
+
+    if total_spent > MAX_POINTS:
+        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
+    elif total_spent > total_available:
+        st.warning("Pontos gastos excedem os disponíveis para este nível")
+
+    # Atributos finais
+    st.subheader("🎯 Finais")
+    final_cols = st.columns(3)
+    for i, (attr, value) in enumerate(attributes.items()):
+        with final_cols[i % 3]:
+            st.metric(attr, value)
+            
 # ===== SIDEBAR =====
 with st.sidebar:
     st.header("⚙️ Configuração", divider="red")
