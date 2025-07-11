@@ -220,7 +220,117 @@ techniques_db = {
         "Great Fireball Technique": {"base": 40, "scaling": "INT", "cost": 25, "cooldown": 20, "level": 30},
         "Flame Dragon Technique": {"base": 48, "scaling": "INT", "cost": 30, "cooldown": 24, "level": 35}
     },
-    # ... (restante do banco de dados de técnicas permanece igual)
+    "Wind": {
+        # INT Wind
+        "Wind Shuriken Technique": {"base": 22, "scaling": "INT", "cost": 8, "cooldown": 10, "level": 10},
+        "Wind Scythe Technique": {"base": 26, "scaling": "INT", "cost": 12, "cooldown": 12, "level": 15},
+        "Drilling Air Bullet Technique": {"base": 30, "scaling": "INT", "cost": 14, "cooldown": 14, "level": 20},
+        "Hurricane Blade Technique": {"base": 34, "scaling": "INT", "cost": 17, "cooldown": 15, "level": 25},
+        "Vacuum Sphere Technique": {"base": 38, "scaling": "INT", "cost": 20, "cooldown": 17, "level": 30},
+        "Wind Claw Technique": {"base": 42, "scaling": "INT", "cost": 23, "cooldown": 18, "level": 35},
+
+        # STR Wind (Fan Style)
+        "Slashing Tornado Technique": {"base": 28, "scaling": "STR", "cost": 12, "cooldown": 11, "level": 10},
+        "Task of the Dragon Technique": {"base": 32, "scaling": "STR", "cost": 15, "cooldown": 13, "level": 15},
+        "Slicing Wind Technique": {"base": 36, "scaling": "STR", "cost": 18, "cooldown": 15, "level": 20},
+        "Wind Mask Technique": {"base": 40, "scaling": "STR", "cost": 22, "cooldown": 16, "level": 25},
+        "Wind Barrage Technique": {"base": 44, "scaling": "STR", "cost": 25, "cooldown": 18, "level": 30},
+        "Wind Cyclone": {"base": 50, "scaling": "STR", "cost": 30, "cooldown": 20, "level": 35}
+    },
+    "Lightning": {
+        "Lightning Senbon Technique": {"base": 24, "scaling": "INT", "cost": 10, "cooldown": 10, "level": 10},
+        "Lightning Spear Technique": {"base": 28, "scaling": "INT", "cost": 14, "cooldown": 12, "level": 15},
+        "Lightning Cutter Technique": {"base": 32, "scaling": "INT", "cost": 17, "cooldown": 14, "level": 20},
+        "Feast of Lightning Technique": {"base": 36, "scaling": "INT", "cost": 20, "cooldown": 15, "level": 25},
+        "Lightning Current Technique": {"base": 40, "scaling": "INT", "cost": 24, "cooldown": 17, "level": 30},
+        "Binding Pillars Techinque": {"base": 46, "scaling": "INT", "cost": 28, "cooldown": 20, "level": 35}
+    },
+    "Earth": {
+        "Earth Pillar Technique": {"base": 26, "scaling": "STR", "cost": 12, "cooldown": 11, "level": 10},
+        "Earth Prison Technique": {"base": 30, "scaling": "STR", "cost": 14, "cooldown": 13, "level": 15},
+        "Earth Split Technique": {"base": 34, "scaling": "STR", "cost": 17, "cooldown": 15, "level": 20},
+        "Ravaging Earth Spikes Technique": {"base": 38, "scaling": "STR", "cost": 20, "cooldown": 17, "level": 25},
+        "Mud River Technique": {"base": 42, "scaling": "STR", "cost": 24, "cooldown": 18, "level": 30},
+        "Earth Wall Technique": {"base": 48, "scaling": "STR", "cost": 28, "cooldown": 20, "level": 35}
+    },
+    "Water": {
+        # INT Water
+        "Water Bullet Technique": {"base": 22, "scaling": "INT", "cost": 9, "cooldown": 10, "level": 10},
+        "Water Slash Technique": {"base": 26, "scaling": "INT", "cost": 12, "cooldown": 12, "level": 15},
+        "Colliding Wave Technique": {"base": 30, "scaling": "INT", "cost": 15, "cooldown": 14, "level": 20},
+        "Water Substitution Technique": {"base": 34, "scaling": "INT", "cost": 18, "cooldown": 15, "level": 25},
+        "Water Prison Technique": {"base": 38, "scaling": "INT", "cost": 22, "cooldown": 17, "level": 30},
+        "Great Water Shark Technique": {"base": 44, "scaling": "INT", "cost": 26, "cooldown": 20, "level": 35},
+
+        # STR Water
+        "Soap Bubble Technique": {"base": 24, "scaling": "STR", "cost": 10, "cooldown": 10, "level": 10},
+        "Bubble Solution Spitting Technique": {"base": 28, "scaling": "STR", "cost": 13, "cooldown": 12, "level": 15},
+        "Bubble Spray Technique": {"base": 32, "scaling": "STR", "cost": 16, "cooldown": 13, "level": 20},
+        "Bubble Clone Technique": {"base": 36, "scaling": "STR", "cost": 20, "cooldown": 15, "level": 25},
+        "Soap Explosion Technique": {"base": 40, "scaling": "STR", "cost": 23, "cooldown": 17, "level": 30},
+        "Great Bubble Shark Technique": {"base": 46, "scaling": "STR", "cost": 27, "cooldown": 20, "level": 35}
+    },
+    "Medical": {
+        "Treat Wounds Technique": {"base": 10, "scaling": "INT", "cost": 5, "cooldown": 10, "level": 10},
+        "Poison Senbon Technique": {"base": 18, "scaling": "INT", "cost": 7, "cooldown": 12, "level": 15},
+        "Poison Scalpel Technique": {"base": 22, "scaling": "INT", "cost": 9, "cooldown": 14, "level": 20},
+        "Mystical Palm Technique": {"base": 26, "scaling": "INT", "cost": 11, "cooldown": 15, "level": 25},
+        "Status Extraction Technique": {"base": 30, "scaling": "INT", "cost": 14, "cooldown": 17, "level": 30},
+        "Chakra Scalpel Technique": {"base": 34, "scaling": "INT", "cost": 16, "cooldown": 20, "level": 35},
+        "Antibodies Activation": {"base": 38, "scaling": "INT", "cost": 18, "cooldown": 22, "level": 35},
+        "Poison Cloud Technique": {"base": 42, "scaling": "INT", "cost": 20, "cooldown": 24, "level": 35},
+        "Cell Regeneration Activation": {"base": 46, "scaling": "INT", "cost": 23, "cooldown": 26, "level": 35},
+        "Cursed Seal Activation": {"base": 50, "scaling": "INT", "cost": 26, "cooldown": 28, "level": 35},
+        "Chakra Transfer Technique": {"base": 54, "scaling": "INT", "cost": 28, "cooldown": 30, "level": 35}
+    },
+    "Weapon": {
+        # INT
+        "Explosive Kunai Technique": {"base": 20, "scaling": "INT", "cost": 10, "cooldown": 10, "level": 10},
+        "Triple Explosive Tag Technique": {"base": 24, "scaling": "INT", "cost": 12, "cooldown": 12, "level": 15},
+        "Hidden Explosive Tag Technique": {"base": 28, "scaling": "INT", "cost": 14, "cooldown": 14, "level": 20},
+        "Shadow Shuriken Technique": {"base": 32, "scaling": "INT", "cost": 16, "cooldown": 16, "level": 25},
+        "Exploding Spiked Ball Technique": {"base": 36, "scaling": "INT", "cost": 18, "cooldown": 18, "level": 30},
+        "Bear Trap Technique": {"base": 40, "scaling": "INT", "cost": 20, "cooldown": 20, "level": 35},
+
+        # STR
+        "Shockwave Slash Technique": {"base": 25, "scaling": "STR", "cost": 11, "cooldown": 11, "level": 10},
+        "Risky Blade Dance Technique": {"base": 29, "scaling": "STR", "cost": 13, "cooldown": 13, "level": 15},
+        "Blade Piercing Technique": {"base": 33, "scaling": "STR", "cost": 15, "cooldown": 15, "level": 20},
+        "Wild Slashes Technique": {"base": 37, "scaling": "STR", "cost": 17, "cooldown": 17, "level": 25},
+        "Crescent Moon Beheading Technique": {"base": 41, "scaling": "STR", "cost": 19, "cooldown": 19, "level": 30},
+        "Dance of the Crescent Moon Technique": {"base": 45, "scaling": "STR", "cost": 22, "cooldown": 22, "level": 35}
+    },
+    "Taijutsu": {
+        # AGI
+        "Seismic Dash Technique": {"base": 26, "scaling": "AGI", "cost": 11, "cooldown": 10, "level": 10},
+        "Breaking Kick Technique": {"base": 30, "scaling": "AGI", "cost": 13, "cooldown": 12, "level": 15},
+        "Speed Mirage Technique": {"base": 34, "scaling": "AGI", "cost": 15, "cooldown": 14, "level": 20},
+        "Youthful Spring Technique": {"base": 38, "scaling": "AGI", "cost": 18, "cooldown": 16, "level": 25},
+        "Morning Peacock Technique": {"base": 42, "scaling": "AGI", "cost": 21, "cooldown": 18, "level": 30},
+        "Whirlwind Kick Technique": {"base": 46, "scaling": "AGI", "cost": 24, "cooldown": 20, "level": 35},
+
+        # STR
+        "Pressure Point Needle Technique": {"base": 28, "scaling": "STR", "cost": 12, "cooldown": 10, "level": 10},
+        "Water Needle Training": {"base": 32, "scaling": "STR", "cost": 14, "cooldown": 12, "level": 15},
+        "Palm Bottom Technique": {"base": 36, "scaling": "STR", "cost": 16, "cooldown": 14, "level": 20},
+        "Vacuum Palm Technique": {"base": 40, "scaling": "STR", "cost": 19, "cooldown": 16, "level": 25},
+        "Mountain Crusher Technique": {"base": 44, "scaling": "STR", "cost": 22, "cooldown": 18, "level": 30},
+        "Revolving Heavens Technique": {"base": 48, "scaling": "STR", "cost": 25, "cooldown": 20, "level": 35},
+        "16 Palms Technique": {"base": 52, "scaling": "STR", "cost": 28, "cooldown": 22, "level": 35}
+    },
+    "Common": {
+        "Body Flicker Technique": {"base": 0, "scaling": "N/A", "cost": 5, "cooldown": 10, "level": 1},
+        "Charging Chakra": {"base": 0, "scaling": "N/A", "cost": 0, "cooldown": 5, "level": 1},
+        "Cloak of Invisibility Technique": {"base": 0, "scaling": "N/A", "cost": 10, "cooldown": 15, "level": 1},
+        "Clone Technique": {"base": 0, "scaling": "N/A", "cost": 8, "cooldown": 10, "level": 1},
+        "Fuuma Wind Shuriken Technique": {"base": 20, "scaling": "STR", "cost": 10, "cooldown": 10, "level": 1},
+        "Kunai Shadow Clone Technique": {"base": 20, "scaling": "INT", "cost": 10, "cooldown": 10, "level": 1},
+        "Substitution Technique": {"base": 0, "scaling": "N/A", "cost": 10, "cooldown": 20, "level": 1},
+        "Sensory Technique": {"base": 0, "scaling": "N/A", "cost": 10, "cooldown": 10, "level": 1},
+        "Summoning Technique": {"base": 0, "scaling": "N/A", "cost": 25, "cooldown": 30, "level": 1},
+        "Transformation Technique": {"base": 0, "scaling": "N/A", "cost": 8, "cooldown": 10, "level": 1},
+        "Chakra Seal Technique": {"base": 0, "scaling": "N/A", "cost": 12, "cooldown": 20, "level": 1}
+    }
 }
 
 # ===== CÁLCULO DE DANO DE ARMA =====
