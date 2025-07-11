@@ -197,9 +197,9 @@ try:
     
     if not df_combined.empty:
         # Aplica estilo
-        styled_df = df_combined.style \
-            .apply(style_element, axis=1) \
-            .format(precision=1)
+        styled_df = df_combined.style.apply(style_element, axis=1).format(precision=1)
+        
+        # Chamada corrigida do dataframe
         st.dataframe(
             styled_df,
             column_config={
