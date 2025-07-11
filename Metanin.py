@@ -137,7 +137,7 @@ weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como p
 selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
     
     # Botão para mostrar técnicas comuns
-    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
+show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
 # ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
 right_sidebar = st.sidebar
