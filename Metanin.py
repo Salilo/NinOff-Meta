@@ -5,6 +5,20 @@ import requests
 from io import BytesIO
 import base64
 
+st.markdown("""
+<style>
+    .stNumberInput, .stSelectbox, .stSlider {
+        padding-bottom: 0.5rem;
+    }
+    .stMetric {
+        margin-bottom: -1rem;
+    }
+    div[data-testid="stVerticalBlock"] > div[style*="flex-direction: column"] > div[data-testid="stVerticalBlock"] {
+        gap: 0.5rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # ===== CONFIGURAÇÃO INICIAL =====
 st.set_page_config(
     page_title="Nin0ff-Meta",
@@ -101,17 +115,19 @@ weapons_db = {
 # ===== LAYOUT PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
 
-# Atributos base (mantenha como está)
-cols = st.columns(2)
-attributes_base = {}
-with cols[0]:
+# Atributos Base (mais compactos)
+st.subheader("📊 Atributos Base")
+base_cols = st.columns(5)
+with base_cols[0]:
     attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
+with base_cols[1]:
     attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
+with base_cols[2]:
     attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
-with cols[1]:
+with base_cols[3]:
     attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
+with base_cols[4]:
     attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
-    
 # ===== SIDEBAR ÚNICA =====
 with st.sidebar:
     # Crie colunas dentro da sidebar
@@ -149,17 +165,31 @@ with st.sidebar:
         guild_level = st.slider("Guild Level Status", 0, 10, 0)
 
     # Coluna direita (atributos finais)
-    with col2:
-        st.header("🧬 Atributos Finais", divider="blue")
-        
-        # Calcular atributos finais
-        attributes = {
-            "STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
-            "FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
-            "INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
-            "AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
-            "CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
-        }
+with col2:
+    st.header("🧬 Atributos Finais", divider="blue")
+    
+    # Crie 2 linhas com 3 colunas cada para os atributos
+    row1 = st.columns(3)
+    row2 = st.columns(3)
+    
+    # Primeira linha de atributos
+    with row1[0]:
+        st.metric("STR", attributes["STR"], help="Força")
+    with row1[1]:
+        st.metric("FRT", attributes["FRT"], help="Resistência")
+    with row1[2]:
+        st.metric("INT", attributes["INT"], help="Inteligência")
+    
+    # Segunda linha de atributos
+    with row2[0]:
+        st.metric("AGI", attributes["AGI"], help="Agilidade")
+    with row2[1]:
+        st.metric("CHK", attributes["CHK"], help="Controle de Chakra")
+    with row2[2]:
+        # Espaço vazio ou outro elemento se necessário
+        pass
+
+    st.write("")  # Espaçamento
 
         # Exibir os atributos
         st.metric("STR (Força)", attributes["STR"])
@@ -352,15 +382,19 @@ def create_tech_df(element):
 
     return pd.DataFrame(tech_list)
 
-# ===== DANOS BÁSICOS =====
+# ===== DANOS BÁSICOS (versão compacta) =====
 st.subheader("🗡️ Dano Básico")
-cols = st.columns(4)
+damage_cols = st.columns(4)
+damages = [
+    ("Melee", attributes["STR"] * 0.8),
+    ("Kunai", attributes["STR"] * 0.6),
+    ("Shuriken", attributes["STR"] * 0.5),
+    ("Senbon", attributes["STR"] * 0.4)
+]
 
-# Cálculos dos danos
-melee_dmg = attributes["STR"] * 0.8
-kunai_dmg = attributes["STR"] * 0.6
-shuriken_dmg = attributes["STR"] * 0.5
-senbon_dmg = attributes["STR"] * 0.4
+for col, (name, dmg) in zip(damage_cols, damages):
+    with col:
+        st.metric(f"{name} Dmg", f"{dmg:.1f}")
 
 # Exibição
 with cols[0]:
