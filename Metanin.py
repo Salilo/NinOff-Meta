@@ -415,7 +415,7 @@ if show_common:
 
 # ===== CRÉDITOS E IMAGEM =====
 
-img_url = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg
+img_url = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg"
 
 try:
     response = requests.get(img_url)
