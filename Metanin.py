@@ -98,6 +98,10 @@ weapons_db = {
     }
 }
 
+
+# ===== INTERFACE PRINCIPAL =====
+st.title("🔥 Nin0ff-Meta Calculator")
+
 # ===== TÉCNICAS =====
 techniques_db = {
     "Fire": {
@@ -220,8 +224,6 @@ techniques_db = {
         "Chakra Seal Technique": {"base": 0, "scaling": "N/A", "cost": 12, "cooldown": 20, "level": 1}
     }
 }
-# ===== INTERFACE PRINCIPAL =====
-st.title("🔥 Nin0ff-Meta Calculator")
 
 # ===== SIDEBAR =====
 with st.sidebar:
