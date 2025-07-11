@@ -166,15 +166,15 @@ st.write(f"**Descrição:** {weapon_data['description']}")
 show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
     # Cálculos de pontos
-    total_spent = sum(attributes_base.values()) - (5 * 5)
-    level = calculate_level(total_spent)
-    total_available = calculate_available_points(level)
-    remaining_points = max(0, total_available - total_spent)
+total_spent = sum(attributes_base.values()) - (5 * 5)
+level = calculate_level(total_spent)
+total_available = calculate_available_points(level)
+remaining_points = max(0, total_available - total_spent)
 
-    st.header("📊 Status", divider="gray")
-    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
-    st.metric("Pontos Disponíveis", remaining_points)
-    st.metric("Nível", level)
+st.header("📊 Status", divider="gray")
+st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
+st.metric("Pontos Disponíveis", remaining_points)
+st.metric("Nível", level)
 
     if total_spent > MAX_POINTS:
         st.error(f"Limite de {MAX_POINTS} pontos excedido!")
