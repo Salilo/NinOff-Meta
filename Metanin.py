@@ -199,9 +199,9 @@ with col2:
     st.metric("CHK (Controle)", attributes["CHK"])
 
         # Seletor de armas
-        st.header("⚔️ Seleção de Arma", divider="gray")
-        weapon_list = ["Nenhuma"] + list(weapons_db.keys())
-        selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)
+    st.header("⚔️ Seleção de Arma", divider="gray")
+    weapon_list = ["Nenhuma"] + list(weapons_db.keys())
+    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)
         
         # Verificação de requisitos
         if selected_weapon and selected_weapon != "Nenhuma":
