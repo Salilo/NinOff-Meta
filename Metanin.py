@@ -102,6 +102,97 @@ weapons_db = {
 # ===== INTERFACE PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
 
+
+# ===== SIDEBAR =====
+with st.sidebar:
+    st.header("⚙️ Configuração", divider="red")
+
+    # Faction Bonuses
+    st.subheader("🏛️ Faction Bonuses")
+    faction = st.radio("Selecione sua facção:", 
+                      ["Nenhuma", "Akatsuki (+25)", "Kage (+20)", "Leaf 12 Guardian (+10)"],
+                      index=0)
+    
+    faction_bonus = 0
+    if "Akatsuki" in faction:
+        faction_bonus = 25
+    elif "Kage" in faction:
+        faction_bonus = 20
+    elif "Leaf" in faction:
+        faction_bonus = 10
+
+    cols = st.columns(2)
+    with cols[0]:
+        primary = st.selectbox("Primário", ELEMENTS, format_func=label_with_emoji)
+    with cols[1]:
+        available_secondary = [e for e in ELEMENTS if e != primary]
+        secondary = st.selectbox("Secundário", available_secondary, format_func=label_with_emoji)
+
+    charms = ["Nenhum"] + list(SIGN_EMOJIS.keys())
+    charm = st.selectbox("Charm", charms, index=0, format_func=label_charm)
+
+    guild_level = st.slider("Guild Level Status", 0, 10, 0)
+
+    # Atributos
+    st.header("🧬 Atributos Base", divider="gray")
+    cols = st.columns(2)
+    attributes_base = {}
+    with cols[0]:
+        attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1)
+        attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1)
+        attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1)
+    with cols[1]:
+        attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1)
+        attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1)
+
+    # Atributos com bônus
+    attributes = {
+        attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
+        for attr, val in attributes_base.items()
+    }
+
+    # Cálculos de pontos
+    total_spent = sum(attributes_base.values()) - (5 * 5)
+    level = calculate_level(total_spent)
+    total_available = calculate_available_points(level)
+    remaining_points = max(0, total_available - total_spent)
+
+    st.header("📊 Status", divider="gray")
+    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
+    st.metric("Pontos Disponíveis", remaining_points)
+    st.metric("Nível", level)
+
+    if total_spent > MAX_POINTS:
+        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
+    elif total_spent > total_available:
+        st.warning("Pontos gastos excedem os disponíveis para este nível")
+
+    # Mostrar atributos finais
+    st.header("🎯 Atributos Finais", divider="gray")
+    for attr, value in attributes.items():
+        st.write(f"{attr}: {value}")
+
+    # Seletor de armas
+    st.header("⚔️ Seleção de Arma", divider="gray")
+    weapon_list = list(weapons_db.keys())
+    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
+    
+    # Verifica requisitos da arma
+    weapon_data = weapons_db[selected_weapon]
+    meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
+    
+    if meets_requirements:
+        st.success("✅ Requisitos atendidos")
+    else:
+        st.error("❌ Requisitos não atendidos")
+    
+    st.write(f"**Dano Base:** {weapon_data['base_damage']}")
+    st.write(f"**Escalonamento:** {weapon_data['scaling']}")
+    st.write(f"**Descrição:** {weapon_data['description']}")
+
+    # Botão para mostrar técnicas comuns
+    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
+
 # ===== TÉCNICAS =====
 techniques_db = {
     "Fire": {
@@ -223,102 +314,6 @@ techniques_db = {
         "Transformation Technique": {"base": 0, "scaling": "N/A", "cost": 8, "cooldown": 10, "level": 1},
         "Chakra Seal Technique": {"base": 0, "scaling": "N/A", "cost": 12, "cooldown": 20, "level": 1}
     }
-}
-
-# ===== SIDEBAR =====
-with st.sidebar:
-    st.header("⚙️ Configuração", divider="red")
-
-    # Faction Bonuses
-    st.subheader("🏛️ Faction Bonuses")
-    faction = st.radio("Selecione sua facção:", 
-                      ["Nenhuma", "Akatsuki (+25)", "Kage (+20)", "Leaf 12 Guardian (+10)"],
-                      index=0)
-    
-    faction_bonus = 0
-    if "Akatsuki" in faction:
-        faction_bonus = 25
-    elif "Kage" in faction:
-        faction_bonus = 20
-    elif "Leaf" in faction:
-        faction_bonus = 10
-
-    cols = st.columns(2)
-    with cols[0]:
-        primary = st.selectbox("Primário", ELEMENTS, format_func=label_with_emoji)
-    with cols[1]:
-        available_secondary = [e for e in ELEMENTS if e != primary]
-        secondary = st.selectbox("Secundário", available_secondary, format_func=label_with_emoji)
-
-    charms = ["Nenhum"] + list(SIGN_EMOJIS.keys())
-    charm = st.selectbox("Charm", charms, index=0, format_func=label_charm)
-
-    guild_level = st.slider("Guild Level Status", 0, 10, 0)
-
-    # Atributos
-    st.header("🧬 Atributos Base", divider="gray")
-    cols = st.columns(2)
-    attributes_base = {}
-    with cols[0]:
-        attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1)
-        attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1)
-        attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1)
-    with cols[1]:
-        attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1)
-        attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1)
-
-    # Atributos com bônus
-    attributes = {
-        attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
-        for attr, val in attributes_base.items()
-    }
-
-    # Cálculos de pontos
-    total_spent = sum(attributes_base.values()) - (5 * 5)
-    level = calculate_level(total_spent)
-    total_available = calculate_available_points(level)
-    remaining_points = max(0, total_available - total_spent)
-
-    st.header("📊 Status", divider="gray")
-    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
-    st.metric("Pontos Disponíveis", remaining_points)
-    st.metric("Nível", level)
-
-    if total_spent > MAX_POINTS:
-        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
-    elif total_spent > total_available:
-        st.warning("Pontos gastos excedem os disponíveis para este nível")
-
-    # Mostrar atributos finais
-    st.header("🎯 Atributos Finais", divider="gray")
-    for attr, value in attributes.items():
-        st.write(f"{attr}: {value}")
-
-    # Seletor de armas
-    st.header("⚔️ Seleção de Arma", divider="gray")
-    weapon_list = list(weapons_db.keys())
-    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
-    
-    # Verifica requisitos da arma
-    weapon_data = weapons_db[selected_weapon]
-    meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
-    
-    if meets_requirements:
-        st.success("✅ Requisitos atendidos")
-    else:
-        st.error("❌ Requisitos não atendidos")
-    
-    st.write(f"**Dano Base:** {weapon_data['base_damage']}")
-    st.write(f"**Escalonamento:** {weapon_data['scaling']}")
-    st.write(f"**Descrição:** {weapon_data['description']}")
-
-    # Botão para mostrar técnicas comuns
-    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
-
-# ===== TÉCNICAS =====
-techniques_db = {
-    # ... (mantenha seu banco de técnicas existente aqui)
-    # Adicionei Water ao dicionário ELEMENTS e EMOJI_MAP no início
 }
 
 # ===== CÁLCULO DE DANO DE ARMA =====
