@@ -131,7 +131,20 @@ with st.sidebar:
 
     guild_level = st.slider("Guild Level Status", 0, 10, 0)
 
-    # Cálculos de pontos
+    # Seletor de armas
+    st.header("⚔️ Seleção de Arma", divider="gray")
+weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como primeira opção
+selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
+    
+    # Botão para mostrar técnicas comuns
+    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
+
+# ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
+right_sidebar = st.sidebar
+with right_sidebar:
+    st.header("🧬 Atributos Finais", divider="blue")
+
+        # Cálculos de pontos
     total_spent = sum(attributes_base.values()) - (5 * 5) if 'attributes_base' in locals() else 0
     level = calculate_level(total_spent)
     total_available = calculate_available_points(level)
@@ -147,18 +160,6 @@ with st.sidebar:
     elif total_spent > total_available:
         st.warning("Pontos gastos excedem os disponíveis para este nível")
 
-    # Seletor de armas
-    st.header("⚔️ Seleção de Arma", divider="gray")
-weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como primeira opção
-selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
-    
-    # Botão para mostrar técnicas comuns
-    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
-
-# ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
-right_sidebar = st.sidebar
-with right_sidebar:
-    st.header("🧬 Atributos Finais", divider="blue")
     
     # Calcular atributos finais
     attributes = {
