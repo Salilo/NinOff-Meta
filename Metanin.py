@@ -26,7 +26,7 @@ COLORS = {
 }
 
 # URL da imagem (substitua pelo seu link)
-IMAGE_URL = "https://via.placeholder.com/80"  # ← COLOQUE SEU LINK AQUI
+IMAGE_URL = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg"  # ← COLOQUE SEU LINK AQUI
 
 # ===== FUNÇÕES =====
 def calculate_level(total_points):
