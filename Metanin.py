@@ -199,7 +199,7 @@ try:
         # Aplica estilo
         styled_df = df_combined.style.apply(style_element, axis=1).format(precision=1)
         
-        # Chamada corrigida do dataframe
+        # Chamada CORRIGIDA do dataframe - FALTAVA FECHAR PARÊNTESE
         st.dataframe(
             styled_df,
             column_config={
@@ -213,7 +213,6 @@ try:
         st.warning("Nenhuma técnica disponível para estes elementos")
 except Exception as e:
     st.error(f"Erro ao gerar tabela: {str(e)}")
-
 # ===== RODAPÉ =====
 st.divider()
 st.caption("🎮 Dica: Clique nos cabeçalhos para ordenar | Atualize a página para resetar")
