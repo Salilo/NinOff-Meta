@@ -200,15 +200,16 @@ try:
         styled_df = df_combined.style.apply(style_element, axis=1).format(precision=1)
         
         # Chamada CORRIGIDA do dataframe - FALTAVA FECHAR PARÊNTESE
-        st.dataframe(
-            styled_df,
-            column_config={
-                "Dano Total": st.column_config.NumberColumn(format="%.1f"),
-                "DPS": st.column_config.NumberColumn(format="%.1f")
-            },
-            hide_index=True,
-            use_container_width=True,
-            height=min(600, 45 * len(df_combined) + 45)
+st.dataframe(
+    styled_df,
+    column_config={
+        "Dano Total": st.column_config.NumberColumn(format="%.1f"),
+        "DPS": st.column_config.NumberColumn(format="%.1f")
+    },
+    hide_index=True,
+    use_container_width=True,
+    height=min(600, 45 * len(df_combined) + 45)
+)
     else:
         st.warning("Nenhuma técnica disponível para estes elementos")
 except Exception as e:
