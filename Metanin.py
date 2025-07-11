@@ -414,17 +414,15 @@ if show_common:
         st.error(f"Erro ao gerar tabela de técnicas comuns: {str(e)}")
 
 # ===== CRÉDITOS E IMAGEM =====
+
+# URL da imagem
+img_url = "https://i.ytimg.com/vi/EGBIG2Modgc/maxresdefault.jpg  # Substitua pela URL real
+
 try:
-    response = requests.get(IMAGE_URL)
-    img = Image.open(BytesIO(response.content))
-    
-    # Redimensiona a imagem
-    img.thumbnail((150, 150))
-    
     # Cria layout de créditos elegante
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image(img, width=100)
+        st.image(img_url, width=100)  # Carrega a imagem diretamente da URL
     with col2:
         st.markdown("""
         <div style="margin-top: 20px;">
@@ -433,8 +431,8 @@ try:
             <p style="color: #666; font-size: 0.8em;">Versão 2.0 | 2023</p>
         </div>
         """, unsafe_allow_html=True)
-except:
-    st.warning("Imagem de créditos não carregada.")
+except Exception as e:
+    st.warning(f"Imagem de créditos não carregada. Erro: {str(e)}")
 
 # ===== RODAPÉ =====
 st.divider()
