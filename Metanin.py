@@ -3,7 +3,6 @@ import pandas as pd
 from PIL import Image
 import requests
 from io import BytesIO
-import base64
 
 # ===== CONFIGURAÇÃO INICIAL =====
 st.set_page_config(
@@ -14,6 +13,7 @@ st.set_page_config(
 
 # ===== CONSTANTES =====
 MAX_POINTS = 285
+
 SIGN_EMOJIS = {
     "Capricorn": "♑", "Aquarius": "♒", "Pisces": "♓", "Aries": "♈",
     "Taurus": "♉", "Gemini": "♊", "Cancer": "♋", "Leo": "♌",
@@ -24,6 +24,7 @@ EMOJI_MAP = {
     "Fire": "🔥", "Wind": "🍃", "Lightning": "⚡", "Earth": "🪨",
     "Water": "💧", "Medical": "🧪", "Weapon": "🗡️", "Taijutsu": "🥋"
 }
+
 COLORS = {
     "Fire": "#FF5555", "Wind": "#55FF55", "Lightning": "#FFFF55",
     "Earth": "#FFAA55", "Water": "#55AAFF", "Medical": "#55FFAA", 
@@ -31,10 +32,9 @@ COLORS = {
 }
 
 ELEMENTS = list(EMOJI_MAP.keys())
+IMAGE_URL = "https://via.placeholder.com/80"
 
-IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
-
-# ===== FUNÇÕES =====
+# ===== FUNÇÕES AUXILIARES =====
 def label_charm(name):
     return f"{SIGN_EMOJIS.get(name, '')} {name}" if name != "Nenhum" else "Nenhum"
 
@@ -68,7 +68,7 @@ def apply_bonuses(base, charm, guild_level, attr, faction_bonus):
     return total_bonus + faction_bonus
 
 def style_element(row):
-    nome_elemento = row["Elemento"].split(" ", 1)[-1]  # Remove emoji
+    nome_elemento = row["Elemento"].split(" ", 1)[-1]
     color = COLORS.get(nome_elemento, "#FFFFFF")
     return [f"background-color: {color}; color: #000000" for _ in row]
 
@@ -77,97 +77,30 @@ def style_weapon(row):
     color = "#55FF55" if meets_req else "#FF5555"
     return [f"background-color: {color}; color: #000000" for _ in row]
 
-# ===== BANCO DE DADOS DE ARMAS =====
-weapons_db = {
-    "Kunai Dagger": {
-        "base_damage": 9,
-        "scaling": "STR",
-        "requirements": {"INT": 10},
-        "description": "Kunai padrão para combate à distância"
-    },
-    "Poison-Laced Kunai": {
-        "base_damage": 9,
-        "scaling": "STR",
-        "requirements": {"INT": 10},
-        "description": "Envenena o alvo ao acertar"
-    },
-    "Wooden Katana": {
-        "base_damage": 2,
-        "scaling": "STR",
-        "requirements": {"STR": 12},
-        "description": "Katana de madeira para treinamento"
-    }
-}
+def create_tech_df(element):
+    tech_data = techniques_db.get(element, {})
+    scaling_map = {"STR": attributes["STR"], "INT": attributes["INT"], "CHK": attributes["CHK"], "AGI": attributes["AGI"]}
+    tech_list = []
 
-# ===== DADOS INICIAIS =====
-attributes_base = {
-    "STR": 5,
-    "FRT": 5,
-    "INT": 5,
-    "AGI": 5,
-    "CHK": 5
-}
+    for name, data in tech_data.items():
+        scaling_value = scaling_map.get(data["scaling"], 0)
+        damage = data["base"] + (scaling_value * 0.6)
+        dps = damage / data["cooldown"] if data["cooldown"] > 0 else 0
 
-charm = "Nenhum"  # Ou use st.selectbox() mais tarde
-guild_level = 0
-faction_bonus = 0
+        tech_list.append({
+            "Técnica": name,
+            "Elemento": f"{EMOJI_MAP.get(element, '')} {element}",
+            "Dano Base": data["base"],
+            "Scaling": data["scaling"],
+            "Dano Total": damage,
+            "DPS": dps,
+            "Chakra": data["cost"],
+            "Cooldown": data["cooldown"],
+            "Nível": data["level"]
+        })
+    return pd.DataFrame(tech_list)
 
-attributes = {
-    attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
-    for attr, val in attributes_base.items()
-}
-
-# ===== SIDEBAR =====
-with st.sidebar:
-    st.header("⚔️ Seleção de Arma", divider="gray")
-    weapon_list = list(weapons_db.keys())
-    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
-
-    weapon_data = weapons_db[selected_weapon]
-    meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
-
-    if meets_requirements:
-        st.success("✅ Requisitos atendidos")
-    else:
-        st.error("❌ Requisitos não atendidos")
-
-    st.write(f"**Dano Base:** {weapon_data['base_damage']}")
-    st.write(f"**Escalonamento:** {weapon_data['scaling']}")
-    st.write(f"**Descrição:** {weapon_data['description']}")
-
-    # Dano da arma
-    scaling_value = attributes[weapon_data["scaling"]]
-    weapon_damage = weapon_data["base_damage"] + (scaling_value * 0.6)
-    st.metric("Dano da Arma", f"{weapon_damage:.1f}")
-
-    # Cálculo de pontos
-    st.header("📊 Status", divider="gray")
-    total_spent = sum(attributes_base.values()) - (5 * 5)
-    level = calculate_level(total_spent)
-    total_available = calculate_available_points(level)
-    remaining_points = max(0, total_available - total_spent)
-
-    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
-    st.metric("Pontos Disponíveis", remaining_points)
-    st.metric("Nível", level)
-
-    if total_spent > MAX_POINTS:
-        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
-    elif total_spent > total_available:
-        st.warning("Pontos gastos excedem os disponíveis para este nível")
-
-    # Atributos Finais
-    st.header("🎯 Atributos Finais", divider="gray")
-    for attr, value in attributes.items():
-        st.write(f"{attr}: {value}")
-
-
-    # Atributos com bônus
-    attributes = {
-        attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
-        for attr, val in attributes_base.items()
-    }
-
+# ===== EXEMPLOS DE VARIÁVEIS TEMPORÁRIAS (você deve obter essas do usuário no app real) =====
 # ===== TÉCNICAS =====
 techniques_db = {
     "Fire": {
@@ -291,64 +224,82 @@ techniques_db = {
     }
 }
 
-# ===== CÁLCULO DE DANO DE ARMA =====
-if selected_weapon:
-    weapon_data = weapons_db[selected_weapon]
-    scaling_value = attributes[weapon_data["scaling"]]
-    weapon_damage = weapon_data["base_damage"] + (scaling_value * 0.6)
-    st.sidebar.metric("Dano da Arma", f"{weapon_damage:.1f}")
+# ===== BANCO DE DADOS ARMAS =====
+weapons_db = {
+    "Kunai Dagger": {
+        "base_damage": 9,
+        "scaling": "STR",
+        "requirements": {"INT": 10},
+        "description": "Kunai padrão para combate à distância"
+    },
+    "Poison-Laced Kunai": {
+        "base_damage": 9,
+        "scaling": "STR",
+        "requirements": {"INT": 10},
+        "description": "Envenena o alvo ao acertar"
+    },
+    "Wooden Katana": {
+        "base_damage": 2,
+        "scaling": "STR",
+        "requirements": {"STR": 12},
+        "description": "Katana de madeira para treinamento"
+    }
+}
 
+primary = "Fire"
+secondary = "Wind"
+charm = "Capricorn"
+guild_level = 10
+faction_bonus = 0
+attributes_base = {"STR": 10, "INT": 20, "FRT": 15, "AGI": 12, "CHK": 18}
 
-try:
-    df_primary = create_tech_df(primary)
-    df_secondary = create_tech_df(secondary)
-    df_combined = pd.concat([df_primary, df_secondary]).reset_index(drop=True)
+# ===== SIDEBAR =====
+with st.sidebar:
+    st.header("⚔️ Seleção de Arma", divider="gray")
+    
+    # Placeholder para weapons_db
+    weapon_list = list(weapons_db.keys()) if 'weapons_db' in globals() else []
+    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list) if weapon_list else None
 
-    st.header(f"📜 Técnicas de {label_with_emoji(primary)} + {label_with_emoji(secondary)}")
-    if not df_combined.empty:
-        styled_df = df_combined.style.apply(style_element, axis=1).format(precision=1)
-        st.dataframe(
-            styled_df,
-            column_config={
-                "Dano Total": st.column_config.NumberColumn(format="%.1f"),
-                "DPS": st.column_config.NumberColumn(format="%.1f")
-            },
-            hide_index=True,
-            use_container_width=True,
-            height=min(600, 45 * len(df_combined) + 45)
-        )
-    else:
-        st.warning("Nenhuma técnica disponível para estes elementos")
-except Exception as e:
-    st.error(f"Erro ao gerar tabela: {str(e)}")
+    # Cálculo dos atributos com bônus
+    attributes = {
+        attr: apply_bonuses(val, charm, guild_level, attr, faction_bonus)
+        for attr, val in attributes_base.items()
+    }
 
+    if selected_weapon:
+        weapon_data = weapons_db[selected_weapon]
+        meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
+        st.success("✅ Requisitos atendidos" if meets_requirements else "❌ Requisitos não atendidos")
+        st.write(f"**Dano Base:** {weapon_data['base_damage']}")
+        st.write(f"**Escalonamento:** {weapon_data['scaling']}")
+        st.write(f"**Descrição:** {weapon_data['description']}")
+        scaling_value = attributes[weapon_data["scaling"]]
+        weapon_damage = weapon_data["base_damage"] + (scaling_value * 0.6)
+        st.metric("Dano da Arma", f"{weapon_damage:.1f}")
+
+    st.header("📊 Status", divider="gray")
+    total_spent = sum(attributes_base.values()) - (5 * 5)
+    level = calculate_level(total_spent)
+    total_available = calculate_available_points(level)
+    remaining_points = max(0, total_available - total_spent)
+
+    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
+    st.metric("Pontos Disponíveis", remaining_points)
+    st.metric("Nível", level)
+
+    if total_spent > MAX_POINTS:
+        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
+    elif total_spent > total_available:
+        st.warning("Pontos gastos excedem os disponíveis para este nível")
+
+    st.header("🎯 Atributos Finais", divider="gray")
+    for attr, value in attributes.items():
+        st.write(f"{attr}: {value}")
+
+    show_common = st.checkbox("📜 Mostrar Técnicas Comuns", value=False)
 
 # ===== EXIBIÇÃO DE TÉCNICAS =====
-def create_tech_df(element):
-    tech_data = techniques_db.get(element, {})
-    scaling_map = {"STR": attributes["STR"], "INT": attributes["INT"], "CHK": attributes["CHK"], "AGI": attributes["AGI"]}
-
-    tech_list = []
-    for name, data in tech_data.items():
-        scaling_value = scaling_map.get(data["scaling"], 0)
-        damage = data["base"] + (scaling_value * 0.6)
-        dps = damage / data["cooldown"] if data["cooldown"] > 0 else 0
-
-        tech_list.append({
-            "Técnica": name,
-            "Elemento": f"{EMOJI_MAP.get(element, '')} {element}",
-            "Dano Base": data["base"],
-            "Scaling": data["scaling"],
-            "Dano Total": damage,
-            "DPS": dps,
-            "Chakra": data["cost"],
-            "Cooldown": data["cooldown"],
-            "Nível": data["level"]
-        })
-
-    return pd.DataFrame(tech_list)
-    
-# Técnicas dos elementos principais
 try:
     df_primary = create_tech_df(primary)
     df_secondary = create_tech_df(secondary)
@@ -356,10 +307,7 @@ try:
 
     st.header(f"📜 Técnicas de {label_with_emoji(primary)} + {label_with_emoji(secondary)}")
     if not df_combined.empty:
-        styled_df = df_combined.style.apply(style_element, axis=1).format({
-            "Dano Total": "{:.1f}",
-            "DPS": "{:.1f}"
-        })
+        styled_df = df_combined.style.apply(style_element, axis=1).format({"Dano Total": "{:.1f}", "DPS": "{:.1f}"})
         st.dataframe(
             styled_df,
             column_config={
@@ -375,16 +323,12 @@ try:
 except Exception as e:
     st.error(f"Erro ao gerar tabela: {str(e)}")
 
-# Técnicas comuns (se ativado)
 if show_common:
     try:
         df_common = create_tech_df("Common")
         if not df_common.empty:
-            st.header(f"📜 Técnicas Comuns")
-            styled_common = df_common.style.apply(style_element, axis=1).format({
-                "Dano Total": "{:.1f}",
-                "DPS": "{:.1f}"
-            })
+            st.header("📜 Técnicas Comuns")
+            styled_common = df_common.style.apply(style_element, axis=1).format({"Dano Total": "{:.1f}", "DPS": "{:.1f}"})
             st.dataframe(
                 styled_common,
                 column_config={
@@ -395,17 +339,13 @@ if show_common:
                 use_container_width=True
             )
     except Exception as e:
-        st.error(f"Erro ao gerar tabela de técnicas comuns: {str(e)}")
+        st.error(f"Erro ao gerar técnicas comuns: {str(e)}")
 
-# ===== CRÉDITOS E IMAGEM =====
+# ===== CRÉDITOS =====
 try:
     response = requests.get(IMAGE_URL)
     img = Image.open(BytesIO(response.content))
-    
-    # Redimensiona a imagem
     img.thumbnail((150, 150))
-    
-    # Cria layout de créditos elegante
     col1, col2 = st.columns([1, 3])
     with col1:
         st.image(img, width=100)
@@ -420,6 +360,5 @@ try:
 except:
     st.warning("Imagem de créditos não carregada.")
 
-# ===== RODAPÉ =====
 st.divider()
 st.caption("🎮 Dica: Clique nos cabeçalhos para ordenar | Atualize a página para resetar")
