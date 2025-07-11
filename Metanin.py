@@ -105,6 +105,10 @@ st.title("🔥 Nin0ff-Meta Calculator")
 with st.sidebar:
     st.header("⚙️ Configuração", divider="red")
 
+    
+    # Botão para mostrar técnicas comuns
+show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
+
     # Faction Bonuses
     st.subheader("🏛️ Faction Bonuses")
     faction = st.radio("Selecione sua facção:", 
@@ -135,39 +139,30 @@ with st.sidebar:
     st.header("⚔️ Seleção de Arma", divider="gray")
 weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como primeira opção
 selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
-    
-    # Botão para mostrar técnicas comuns
-show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
+
+# ===== ATRIBUTOS BASE =====
+cols = st.columns(2)
+attributes_base = {}
+with cols[0]:
+    attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
+    attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
+    attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
+with cols[1]:
+    attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
+    attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
 
 # ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
 right_sidebar = st.sidebar
 with right_sidebar:
     st.header("🧬 Atributos Finais", divider="blue")
-
-        # Cálculos de pontos
-    total_spent = sum(attributes_base.values()) - (5 * 5) if 'attributes_base' in locals() else 0
-    level = calculate_level(total_spent)
-    total_available = calculate_available_points(level)
-    remaining_points = max(0, total_available - total_spent)
-
-    st.header("📊 Status", divider="gray")
-    st.metric("Pontos Gastos", f"{total_spent}/{MAX_POINTS}")
-    st.metric("Pontos Disponíveis", remaining_points)
-    st.metric("Nível", level)
-
-    if total_spent > MAX_POINTS:
-        st.error(f"Limite de {MAX_POINTS} pontos excedido!")
-    elif total_spent > total_available:
-        st.warning("Pontos gastos excedem os disponíveis para este nível")
-
     
     # Calcular atributos finais
     attributes = {
-"STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
-"FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
-"INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
-"AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
-"CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
+        "STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
+        "FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
+        "INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
+        "AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
+        "CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
     }
 
     # Exibir os atributos
