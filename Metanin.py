@@ -101,7 +101,7 @@ weapons_db = {
 
 # ===== INTERFACE PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
-
+col_main, col_stats = st.columns([3, 1], gap="large")
 
 # ===== SIDEBAR =====
 with st.sidebar:
