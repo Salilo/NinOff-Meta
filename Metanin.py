@@ -31,7 +31,7 @@ COLORS = {
 }
 ELEMENTS = list(EMOJI_MAP.keys())
 
-IMAGE_URL = "https://pbs.twimg.com/media/EU0zpJrUwAA-d9i.jpg:large"  # Substitua pelo link desejado
+IMAGE_URL = "https://via.placeholder.com/80"  # Substitua pelo link desejado
 
 # ===== FUNÇÕES =====
 def label_charm(name):
@@ -131,20 +131,7 @@ with st.sidebar:
 
     guild_level = st.slider("Guild Level Status", 0, 10, 0)
 
-    # Seletor de armas
-    st.header("⚔️ Seleção de Arma", divider="gray")
-weapon_list = ["Nenhuma"] + list(weapons_db.keys())  # Adiciona "Nenhuma" como primeira opção
-selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)  # index=0 seleciona "Nenhuma" por padrão
-    
-    # Botão para mostrar técnicas comuns
-show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
-
-# ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
-right_sidebar = st.sidebar
-with right_sidebar:
-    st.header("🧬 Atributos Finais", divider="blue")
-
-        # Cálculos de pontos
+    # Cálculos de pontos
     total_spent = sum(attributes_base.values()) - (5 * 5) if 'attributes_base' in locals() else 0
     level = calculate_level(total_spent)
     total_available = calculate_available_points(level)
@@ -160,23 +147,35 @@ with right_sidebar:
     elif total_spent > total_available:
         st.warning("Pontos gastos excedem os disponíveis para este nível")
 
+    # Seletor de armas
+    st.header("⚔️ Seleção de Arma", divider="gray")
+    weapon_list = list(weapons_db.keys())
+    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list)
     
-    # Calcular atributos finais
-    attributes = {
-"STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
-"FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
-"INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
-"AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
-"CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
-    }
+    # Botão para mostrar técnicas comuns
+    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
-    # Exibir os atributos
-    st.metric("STR (Força)", attributes["STR"])
-    st.metric("FRT (Resistência)", attributes["FRT"])
-    st.metric("INT (Inteligência)", attributes["INT"])
-    st.metric("AGI (Agilidade)", attributes["AGI"])
-    st.metric("CHK (Controle)", attributes["CHK"])
+# ===== SIDEBAR DIREITA (ATRIBUTOS) =====
+with st.sidebar:
+    st.sidebar.empty()  # Limpa a sidebar padrão para criar uma nova
+
+# Criando uma nova sidebar à direita
+right_sidebar = st.sidebar
+with right_sidebar:
+    st.header("🧬 Atributos", divider="blue")
     
+    # Subheader para Atributos Base
+    st.subheader("Atributos Base")
+    cols = st.columns(2)
+    attributes_base = {}
+    with cols[0]:
+        attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
+        attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
+        attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
+    with cols[1]:
+        attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
+        attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
+
     # Calcular atributos finais
     if 'attributes_base' in locals():
         attributes = {
@@ -334,19 +333,12 @@ techniques_db = {
     }
 }
 
-if selected_weapon and selected_weapon != "Nenhuma":
+# ===== CÁLCULO DE DANO DE ARMA =====
+if selected_weapon:
     weapon_data = weapons_db[selected_weapon]
-    meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
-    
-    if meets_requirements:
-        st.success("✅ Requisitos atendidos")
-    else:
-        st.error("❌ Requisitos não atendidos")
-    
-    # Cálculo de dano da arma
     scaling_value = attributes[weapon_data["scaling"]]
     weapon_damage = weapon_data["base_damage"] + (scaling_value * 0.6)
-    st.metric("Dano da Arma", f"{weapon_damage:.1f}")
+    right_sidebar.metric("Dano da Arma", f"{weapon_damage:.1f}")
 
 # ===== EXIBIÇÃO DE TÉCNICAS =====
 def create_tech_df(element):
@@ -372,28 +364,6 @@ def create_tech_df(element):
         })
 
     return pd.DataFrame(tech_list)
-
-# ===== DANOS BÁSICOS =====
-st.subheader("🗡️ Dano Básico")
-cols = st.columns(4)
-
-# Cálculos dos danos
-melee_dmg = attributes["STR"] * 0.8
-kunai_dmg = attributes["STR"] * 0.6
-shuriken_dmg = attributes["STR"] * 0.5
-senbon_dmg = attributes["STR"] * 0.4
-
-# Exibição
-with cols[0]:
-    st.metric("Melee Dmg", f"{melee_dmg:.1f}")
-with cols[1]:
-    st.metric("Kunai Dmg", f"{kunai_dmg:.1f}")
-with cols[2]:
-    st.metric("Shuriken Dmg", f"{shuriken_dmg:.1f}")
-with cols[3]:
-    st.metric("Senbon Dmg", f"{senbon_dmg:.1f}")
-
-st.write("---")  # Linha divisória
 
 # Técnicas dos elementos principais
 try:
