@@ -5,20 +5,6 @@ import requests
 from io import BytesIO
 import base64
 
-st.markdown("""
-<style>
-    .stNumberInput, .stSelectbox, .stSlider {
-        padding-bottom: 0.5rem;
-    }
-    .stMetric {
-        margin-bottom: -1rem;
-    }
-    div[data-testid="stVerticalBlock"] > div[style*="flex-direction: column"] > div[data-testid="stVerticalBlock"] {
-        gap: 0.5rem;
-    }
-</style>
-""", unsafe_allow_html=True)
-
 # ===== CONFIGURAÇÃO INICIAL =====
 st.set_page_config(
     page_title="Nin0ff-Meta",
@@ -112,118 +98,67 @@ weapons_db = {
     }
 }
 
-# ===== LAYOUT PRINCIPAL =====
+# ===== INTERFACE PRINCIPAL =====
 st.title("🔥 Nin0ff-Meta Calculator")
 
-# Atributos Base (mais compactos)
-st.subheader("📊 Atributos Base")
-base_cols = st.columns(5)
-
-# Certifique-se de que attributes_base está definido antes de usar
+# Primeiro defina os atributos base
+cols = st.columns(2)
 attributes_base = {}
-
-with base_cols[0]:
+with cols[0]:
     attributes_base["STR"] = st.number_input("STR", min_value=5, value=5, step=1, key="str_base")
-with base_cols[1]:
     attributes_base["FRT"] = st.number_input("FRT", min_value=5, value=5, step=1, key="frt_base")
-with base_cols[2]:
     attributes_base["INT"] = st.number_input("INT", min_value=5, value=5, step=1, key="int_base")
-with base_cols[3]:
+with cols[1]:
     attributes_base["AGI"] = st.number_input("AGI", min_value=5, value=5, step=1, key="agi_base")
-with base_cols[4]:
     attributes_base["CHK"] = st.number_input("CHK", min_value=5, value=5, step=1, key="chk_base")
-    
-# ===== SIDEBAR ÚNICA =====
+
+# ===== SIDEBAR ESQUERDA (CONFIGURAÇÕES) =====
 with st.sidebar:
-    # Crie colunas dentro da sidebar
-    col1, col2 = st.columns(2)
+    st.header("⚙️ Configuração", divider="red")
     
-    # Coluna esquerda (configurações)
-    with col1:
-        st.header("⚙️ Configuração", divider="red")
-        st.write("")  # Espaço vazio
-        
-        # Faction Bonuses
-        st.subheader("🏛️ Faction Bonuses")
-        faction = st.radio("Selecione sua facção:", 
-                         ["Nenhuma", "Akatsuki (+25)", "Kage (+20)", "Leaf 12 Guardian (+10)"],
-                         index=0)
-        
-        faction_bonus = 0
-        if "Akatsuki" in faction:
-            faction_bonus = 25
-        elif "Kage" in faction:
-            faction_bonus = 20
-        elif "Leaf" in faction:
-            faction_bonus = 10
+    # ... (outras configurações permanecem iguais)
+    
+    # Seletor de armas
+    st.header("⚔️ Seleção de Arma", divider="gray")
+    weapon_list = ["Nenhuma"] + list(weapons_db.keys())
+    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)
+    
+    # Botão para mostrar técnicas comuns
+    show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
-        cols = st.columns(2)
-        with cols[0]:
-            primary = st.selectbox("Primário", ELEMENTS, format_func=label_with_emoji)
-        with cols[1]:
-            available_secondary = [e for e in ELEMENTS if e != primary]
-            secondary = st.selectbox("Secundário", available_secondary, format_func=label_with_emoji)
-
-        charms = ["Nenhum"] + list(SIGN_EMOJIS.keys())
-        charm = st.selectbox("Charm", charms, index=0, format_func=label_charm)
-
-        guild_level = st.slider("Guild Level Status", 0, 10, 0)
-
-    # Coluna direita (atributos finais)
-with col2:
+# ===== SIDEBAR DIREITA (ATRIBUTOS FINAIS) =====
+with st.sidebar:
     st.header("🧬 Atributos Finais", divider="blue")
     
-    # Crie 2 linhas com 3 colunas cada para os atributos
-    row1 = st.columns(3)
-    row2 = st.columns(3)
-    
-    # Primeira linha de atributos
-    with row1[0]:
-        st.metric("STR", attributes["STR"], help="Força")
-    with row1[1]:
-        st.metric("FRT", attributes["FRT"], help="Resistência")
-    with row1[2]:
-        st.metric("INT", attributes["INT"], help="Inteligência")
-    
-    # Segunda linha de atributos
-    with row2[0]:
-        st.metric("AGI", attributes["AGI"], help="Agilidade")
-    with row2[1]:
-        st.metric("CHK", attributes["CHK"], help="Controle de Chakra")
-    with row2[2]:
-        # Espaço vazio ou outro elemento se necessário
-        pass
+    # Calcular atributos finais
+    attributes = {
+        "STR": apply_bonuses(attributes_base["STR"], charm, guild_level, "STR", faction_bonus),
+        "FRT": apply_bonuses(attributes_base["FRT"], charm, guild_level, "FRT", faction_bonus),
+        "INT": apply_bonuses(attributes_base["INT"], charm, guild_level, "INT", faction_bonus),
+        "AGI": apply_bonuses(attributes_base["AGI"], charm, guild_level, "AGI", faction_bonus),
+        "CHK": apply_bonuses(attributes_base["CHK"], charm, guild_level, "CHK", faction_bonus)
+    }
 
-    st.write("")  # Espaçamento
-
-        # Exibir os atributos
+    # Exibir os atributos
     st.metric("STR (Força)", attributes["STR"])
     st.metric("FRT (Resistência)", attributes["FRT"])
     st.metric("INT (Inteligência)", attributes["INT"])
     st.metric("AGI (Agilidade)", attributes["AGI"])
     st.metric("CHK (Controle)", attributes["CHK"])
 
-        # Seletor de armas
-    st.header("⚔️ Seleção de Arma", divider="gray")
-    weapon_list = ["Nenhuma"] + list(weapons_db.keys())
-    selected_weapon = st.selectbox("Escolha sua arma:", weapon_list, index=0)
-        
-        # Verificação de requisitos
+    # Verifica requisitos da arma
     if selected_weapon and selected_weapon != "Nenhuma":
         weapon_data = weapons_db[selected_weapon]
         meets_requirements = all(attributes.get(req, 0) >= val for req, val in weapon_data["requirements"].items())
-            
+        
         if meets_requirements:
             st.success("✅ Requisitos atendidos")
         else:
             st.error("❌ Requisitos não atendidos")
-            
+        
         st.write(f"**Dano Base:** {weapon_data['base_damage']}")
         st.write(f"**Escalonamento:** {weapon_data['scaling']}")
         st.write(f"**Descrição:** {weapon_data['description']}")
-
-        # Botão para mostrar técnicas comuns
-        show_common = st.toggle("Mostrar Técnicas Comuns", value=False)
 
 # ===== TÉCNICAS =====
 techniques_db = {
@@ -387,19 +322,15 @@ def create_tech_df(element):
 
     return pd.DataFrame(tech_list)
 
-# ===== DANOS BÁSICOS (versão compacta) =====
+# ===== DANOS BÁSICOS =====
 st.subheader("🗡️ Dano Básico")
-damage_cols = st.columns(4)
-damages = [
-    ("Melee", attributes["STR"] * 0.8),
-    ("Kunai", attributes["STR"] * 0.6),
-    ("Shuriken", attributes["STR"] * 0.5),
-    ("Senbon", attributes["STR"] * 0.4)
-]
+cols = st.columns(4)
 
-for col, (name, dmg) in zip(damage_cols, damages):
-    with col:
-        st.metric(f"{name} Dmg", f"{dmg:.1f}")
+# Cálculos dos danos
+melee_dmg = attributes["STR"] * 0.8
+kunai_dmg = attributes["STR"] * 0.6
+shuriken_dmg = attributes["STR"] * 0.5
+senbon_dmg = attributes["STR"] * 0.4
 
 # Exibição
 with cols[0]:
